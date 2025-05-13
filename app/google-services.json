@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "211314588746",
+    "project_id": "studenteventsapp",
+    "storage_bucket": "studenteventsapp.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:211314588746:android:04908085f897e70aff7ab3",
+        "android_client_info": {
+          "package_name": "ba.sum.fpmoz.example.studenteventsapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "211314588746-osq8eom2ougt8119u0qkp7gsi5q54un5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "ba.sum.fpmoz.example.studenteventsapp",
+            "certificate_hash": "8af1049f624e871c75c7cc8a0d268f6793d47231"
+          }
+        },
+        {
+          "client_id": "211314588746-hhkrfaftgcvg5ajcko86hucu98h9hndu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCud5dAPo5BzU0g9QQ9xd8jde3AW_T406U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "211314588746-hhkrfaftgcvg5ajcko86hucu98h9hndu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
