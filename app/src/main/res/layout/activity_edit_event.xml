@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#E6F1E8"
+    android:padding="24dp">
+
+    <!-- Naslov -->
+    <EditText
+        android:id="@+id/editTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Naslov događaja"
+        android:inputType="textCapWords"
+        android:minHeight="48dp"
+        android:padding="12dp"
+        android:background="#FFFFFF"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <!-- Opis -->
+    <EditText
+        android:id="@+id/editDescription"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Opis događaja"
+        android:inputType="textMultiLine"
+        android:minLines="3"
+        android:padding="12dp"
+        android:background="#FFFFFF"
+        android:layout_marginTop="12dp"
+        app:layout_constraintTop_toBottomOf="@id/editTitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <!-- Godina -->
+    <EditText
+        android:id="@+id/editYear"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Godina studija (1-6)"
+        android:inputType="number"
+        android:minHeight="48dp"
+        android:padding="12dp"
+        android:background="#FFFFFF"
+        android:layout_marginTop="12dp"
+        app:layout_constraintTop_toBottomOf="@id/editDescription"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <!-- Datum -->
+    <EditText
+        android:id="@+id/editDate"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Datum (npr. 18.05.2025.)"
+        android:inputType="text"
+        android:minHeight="48dp"
+        android:padding="12dp"
+        android:background="#FFFFFF"
+        android:layout_marginTop="12dp"
+        app:layout_constraintTop_toBottomOf="@id/editYear"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <!-- Slika događaja -->
+    <ImageView
+        android:id="@+id/imageViewEvent"
+        android:layout_width="0dp"
+        android:layout_height="180dp"
+        android:layout_marginTop="16dp"
+        android:scaleType="centerCrop"
+        android:background="#DFF3E3"
+        android:contentDescription="Slika događaja"
+        app:layout_constraintTop_toBottomOf="@id/editDate"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Gumb za promjenu slike -->
+    <Button
+        android:id="@+id/buttonChangeImage"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Promijeni sliku"
+        android:layout_marginTop="12dp"
+        android:backgroundTint="#2C5F2D"
+        android:textColor="#FFFFFF"
+        app:layout_constraintTop_toBottomOf="@id/imageViewEvent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <!-- Gumb za spremanje promjena -->
+    <Button
+        android:id="@+id/buttonSaveChanges"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Spremi promjene"
+        android:layout_marginTop="20dp"
+        android:backgroundTint="#2C5F2D"
+        android:textColor="#FFFFFF"
+        app:layout_constraintTop_toBottomOf="@id/buttonChangeImage"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -20,23 +20,6 @@
         android:textColor="#2C5F2D"
         android:layout_marginBottom="32dp"/>
 
-    <Button
-        android:id="@+id/loginButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Log in"
-        android:backgroundTint="#2C5F2D"
-        android:textColor="#FFFFFF"
-        android:layout_marginBottom="16dp" />
-
-    <Button
-        android:id="@+id/registerButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Sign up"
-        android:backgroundTint="#2C5F2D"
-        android:textColor="#FFFFFF"
-        android:layout_marginBottom="16dp" />
 
     <Button
         android:id="@+id/logoutButton"
@@ -45,4 +28,25 @@
         android:text="Log out"
         android:backgroundTint="#FFFFFF"
         android:textColor="#2C5F2D" />
+
+    <Button
+        android:id="@+id/viewEventsButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Pregled događaja"
+        android:backgroundTint="#2C5F2D"
+        android:textColor="#FFFFFF"
+        android:layout_marginTop="16dp"/>
+
+    <Button
+        android:id="@+id/addEventButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Dodaj događaj"
+        android:backgroundTint="#2C5F2D"
+        android:textColor="#FFFFFF"
+        android:layout_marginTop="8dp"
+        android:visibility="gone"/> <!-- Početno sakriven -->
+
+
 </LinearLayout>

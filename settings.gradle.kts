@@ -21,4 +21,6 @@ dependencyResolutionManagement {
 
 rootProject.name = "StudentEventsApp"
 include(":app")
+
+
  

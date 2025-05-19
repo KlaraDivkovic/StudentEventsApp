@@ -26,19 +26,22 @@ class LoginActivity : AppCompatActivity() {
     private val RC_SIGN_IN = 9001
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.title = "⬅\uFE0F" // (možeš promijeniti prema stranici)
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
         auth = FirebaseAuth.getInstance()
 
-        // Google konfiguracija
+        // 🔐 Google prijava konfiguracija
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.default_web_client_id))
             .requestEmail()
             .build()
         googleSignInClient = GoogleSignIn.getClient(this, gso)
 
-        // UI elementi
+        // 🔗 UI elementi
         val emailEditText: EditText = findViewById(R.id.emailEditText)
         val passwordEditText: EditText = findViewById(R.id.passwordEditText)
         val loginButton: Button = findViewById(R.id.loginButton)
@@ -46,6 +49,7 @@ class LoginActivity : AppCompatActivity() {
         val registerRedirect: TextView = findViewById(R.id.registerRedirect)
         val forgotPasswordText: TextView = findViewById(R.id.forgotPasswordText)
 
+        // 📧 Prijava s emailom i lozinkom
         loginButton.setOnClickListener {
             val email = emailEditText.text.toString().trim()
             val password = passwordEditText.text.toString().trim()
@@ -55,8 +59,7 @@ class LoginActivity : AppCompatActivity() {
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful) {
                             Toast.makeText(this, "Uspješna prijava!", Toast.LENGTH_SHORT).show()
-                            startActivity(Intent(this, MainActivity::class.java))
-                            finish()
+                            goToMainActivity()
                         } else {
                             Toast.makeText(this, "Greška: ${task.exception?.message}", Toast.LENGTH_LONG).show()
                         }
@@ -66,6 +69,7 @@ class LoginActivity : AppCompatActivity() {
             }
         }
 
+        // 🟢 Prijava putem Google-a
         googleLoginButton.setOnClickListener {
             googleSignInClient.signOut().addOnCompleteListener {
                 val signInIntent = googleSignInClient.signInIntent
@@ -73,6 +77,7 @@ class LoginActivity : AppCompatActivity() {
             }
         }
 
+        // 🔁 Reset lozinke
         forgotPasswordText.setOnClickListener {
             val email = emailEditText.text.toString().trim()
             if (email.isNotEmpty()) {
@@ -88,7 +93,7 @@ class LoginActivity : AppCompatActivity() {
             }
         }
 
-        // Stiliziraj "Sign up" u tekstu
+        // ✨ Link "Sign up" stiliziran
         val fullText = "Don't have an account? Sign up"
         val spannable = SpannableString(fullText)
         val greenColor = Color.parseColor("#2C5F2D")
@@ -113,7 +118,21 @@ class LoginActivity : AppCompatActivity() {
         registerRedirect.movementMethod = LinkMovementMethod.getInstance()
         registerRedirect.highlightColor = Color.TRANSPARENT
     }
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressedDispatcher.onBackPressed()
+        return true
+    }
 
+
+    // 🎯 Prelazak na MainActivity nakon uspješne prijave
+    private fun goToMainActivity() {
+        val intent = Intent(this, MainActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
+        finish()
+    }
+
+    // 🔐 Prijava Google korisnika
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
@@ -126,8 +145,7 @@ class LoginActivity : AppCompatActivity() {
                     .addOnCompleteListener(this) { signInTask ->
                         if (signInTask.isSuccessful) {
                             Toast.makeText(this, "Google prijava uspješna!", Toast.LENGTH_SHORT).show()
-                            startActivity(Intent(this, MainActivity::class.java))
-                            finish()
+                            goToMainActivity()
                         } else {
                             Toast.makeText(this, "Google prijava neuspješna!", Toast.LENGTH_SHORT).show()
                         }
@@ -137,4 +155,5 @@ class LoginActivity : AppCompatActivity() {
             }
         }
     }
+
 }

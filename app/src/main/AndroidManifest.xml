@@ -14,15 +14,9 @@
         android:theme="@style/Theme.StudentEventsApp"
         tools:targetApi="31">
 
-        <!-- Aktivnost za prijavu -->
-        <activity android:name=".LoginActivity" />
-
-        <!-- Aktivnost za registraciju -->
-        <activity android:name=".RegisterActivity" />
-
-        <!-- Glavna aktivnost -->
+        <!-- HomeActivity je sada početna (launcher) aktivnost -->
         <activity
-            android:name=".MainActivity"
+            android:name=".HomeActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -30,6 +24,12 @@
             </intent-filter>
         </activity>
 
-    </application>
+        <activity android:name=".EditEventActivity" android:exported="false" />
+        <activity android:name=".EventListActivity" android:exported="false" />
+        <activity android:name=".AddEventActivity" android:exported="false" />
+        <activity android:name=".LoginActivity" android:exported="false" />
+        <activity android:name=".RegisterActivity" android:exported="false" />
+        <activity android:name=".MainActivity" android:exported="false" />
 
+    </application>
 </manifest>

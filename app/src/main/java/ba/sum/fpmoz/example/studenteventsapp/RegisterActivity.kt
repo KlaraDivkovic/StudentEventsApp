@@ -14,12 +14,15 @@ import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 
 class RegisterActivity : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.title = "⬅\uFE0F" //
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
 
@@ -35,26 +38,47 @@ class RegisterActivity : AppCompatActivity() {
         val loginRedirect = findViewById<TextView>(R.id.loginRedirect)
 
         registerButton.setOnClickListener {
+            val firstNameText = firstName.text.toString().trim()
+            val lastNameText = lastName.text.toString().trim()
+            val facultyText = faculty.text.toString().trim()
+            val yearText = year.text.toString().trim()
             val emailText = email.text.toString().trim()
             val passwordText = password.text.toString().trim()
-            val selectedYear = year.text.toString().trim()
 
-            if (selectedYear.isEmpty() || selectedYear.toIntOrNull() == null || selectedYear.toInt() !in 1..6) {
-                Toast.makeText(this, "Unesi godinu od 1 do 6", Toast.LENGTH_SHORT).show()
+            if (emailText.isEmpty() || passwordText.isEmpty() || yearText.isEmpty() || firstNameText.isEmpty() || lastNameText.isEmpty() || facultyText.isEmpty()) {
+                Toast.makeText(this, "Ispuni sva polja", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            if (emailText.isEmpty() || passwordText.isEmpty()) {
-                Toast.makeText(this, "Ispuni sva polja", Toast.LENGTH_SHORT).show()
+            val yearInt = yearText.toIntOrNull()
+            if (yearInt == null || yearInt !in 1..6) {
+                Toast.makeText(this, "Godina mora biti broj od 1 do 6", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
             auth.createUserWithEmailAndPassword(emailText, passwordText)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
-                        Toast.makeText(this, "Registracija uspješna!", Toast.LENGTH_SHORT).show()
-                        startActivity(Intent(this, LoginActivity::class.java))
-                        finish()
+                        val uid = auth.currentUser?.uid
+                        val userMap = mapOf(
+                            "firstName" to firstNameText,
+                            "lastName" to lastNameText,
+                            "faculty" to facultyText,
+                            "year" to yearInt,
+                            "email" to emailText
+                        )
+
+                        FirebaseDatabase.getInstance().getReference("Users")
+                            .child(uid ?: "")
+                            .setValue(userMap)
+                            .addOnSuccessListener {
+                                Toast.makeText(this, "Registracija uspješna!", Toast.LENGTH_SHORT).show()
+                                startActivity(Intent(this, LoginActivity::class.java))
+                                finish()
+                            }
+                            .addOnFailureListener {
+                                Toast.makeText(this, "Greška pri spremanju podataka", Toast.LENGTH_LONG).show()
+                            }
                     } else {
                         Toast.makeText(this, "Greška: ${task.exception?.message}", Toast.LENGTH_LONG).show()
                     }
@@ -67,16 +91,13 @@ class RegisterActivity : AppCompatActivity() {
         val start = fullText.indexOf("Log in")
         val end = fullText.length
         val greenColor = Color.parseColor("#2C5F2D")
-        val blackColor = Color.parseColor("#000000")
 
-        // Crna boja za "Already have an account?"
-        spannable.setSpan(ForegroundColorSpan(blackColor), 0, start, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-
-        // Zeleni boldani "Log in"
-        spannable.setSpan(ForegroundColorSpan(greenColor), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        // Podebljano i zeleno za "Log in"
         spannable.setSpan(StyleSpan(Typeface.BOLD), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        spannable.setSpan(ForegroundColorSpan(greenColor), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
 
-        spannable.setSpan(object : ClickableSpan() {
+        // Klikabilno
+        val clickableSpan = object : ClickableSpan() {
             override fun onClick(widget: View) {
                 startActivity(Intent(this@RegisterActivity, LoginActivity::class.java))
                 finish()
@@ -87,10 +108,16 @@ class RegisterActivity : AppCompatActivity() {
                 ds.color = greenColor
                 ds.isUnderlineText = false
             }
-        }, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        }
+        spannable.setSpan(clickableSpan, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
 
         loginRedirect.text = spannable
         loginRedirect.movementMethod = LinkMovementMethod.getInstance()
         loginRedirect.highlightColor = Color.TRANSPARENT
     }
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressedDispatcher.onBackPressed()
+        return true
+    }
+
 }
