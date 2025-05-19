@@ -46,7 +46,7 @@ class RegisterActivity : AppCompatActivity() {
             val passwordText = password.text.toString().trim()
 
             if (emailText.isEmpty() || passwordText.isEmpty() || yearText.isEmpty() || firstNameText.isEmpty() || lastNameText.isEmpty() || facultyText.isEmpty()) {
-                Toast.makeText(this, "Ispuni sva polja", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Ispunite sva polja", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 

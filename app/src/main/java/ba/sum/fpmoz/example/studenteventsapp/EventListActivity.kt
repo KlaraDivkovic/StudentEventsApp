@@ -1,20 +1,17 @@
 package ba.sum.fpmoz.example.studenteventsapp
 
-import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
-
 
 class EventListActivity : AppCompatActivity() {
 
@@ -52,7 +49,11 @@ class EventListActivity : AppCompatActivity() {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         val role = snapshot.getValue(String::class.java)
                         val isAdmin = role == "admin"
-                        Toast.makeText(this@EventListActivity, "Prijavljen kao: ${if (isAdmin) "Admin" else "Korisnik"}", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            this@EventListActivity,
+                            "Prijavljen kao: ${if (isAdmin) "Admin" else "Korisnik"}",
+                            Toast.LENGTH_SHORT
+                        ).show()
                         loadEvents(isAdmin)
                     }
 
@@ -61,7 +62,7 @@ class EventListActivity : AppCompatActivity() {
                     }
                 })
         } else {
-            Toast.makeText(this, "Gost ste", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Pregledavate događaje kao gost.", Toast.LENGTH_SHORT).show()
             loadEvents(false)
         }
     }
@@ -80,7 +81,11 @@ class EventListActivity : AppCompatActivity() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Toast.makeText(this@EventListActivity, "Greška u dohvaćanju podataka", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this@EventListActivity,
+                    "Greška u dohvaćanju podataka",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         })
     }
@@ -91,14 +96,20 @@ class EventListActivity : AppCompatActivity() {
     ) : RecyclerView.Adapter<EventAdapter.EventViewHolder>() {
 
         inner class EventViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+            val image: ImageView = view.findViewById(R.id.imageEvent)
             val title: TextView = view.findViewById(R.id.textTitle)
             val description: TextView = view.findViewById(R.id.textDescription)
             val btnEdit: Button = view.findViewById(R.id.buttonEdit)
             val btnDelete: Button = view.findViewById(R.id.buttonDelete)
+            val btnInterested: Button = view.findViewById(R.id.buttonInterested)
+            val btnNotInterested: Button = view.findViewById(R.id.buttonNotInterested)
+            val textInterested: TextView = view.findViewById(R.id.textInterestedCount)
+            val textNotInterested: TextView = view.findViewById(R.id.textNotInterestedCount)
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventViewHolder {
-            val view = LayoutInflater.from(parent.context).inflate(R.layout.item_event, parent, false)
+            val view = LayoutInflater.from(parent.context)
+                .inflate(R.layout.item_event, parent, false)
             return EventViewHolder(view)
         }
 
@@ -107,6 +118,18 @@ class EventListActivity : AppCompatActivity() {
             holder.title.text = event.title
             holder.description.text = event.description
 
+            // Prikaz slike
+            Glide.with(holder.itemView.context)
+                .load(Uri.parse(event.imageUrl))
+                .placeholder(R.drawable.download)
+                .error(R.drawable.download)
+                .into(holder.image)
+
+            // Prikaz broja glasova
+            holder.textInterested.text = "Zainteresirani: ${event.interestedCount}"
+            holder.textNotInterested.text = "Nisu zainteresirani: ${event.notInterestedCount}"
+
+            // Admin prikaz
             if (!isAdmin) {
                 holder.btnEdit.visibility = View.GONE
                 holder.btnDelete.visibility = View.GONE
@@ -115,7 +138,11 @@ class EventListActivity : AppCompatActivity() {
                 holder.btnDelete.visibility = View.VISIBLE
 
                 holder.btnEdit.setOnClickListener {
-                    Toast.makeText(holder.itemView.context, "Uredi kliknut (nije implementirano)", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        holder.itemView.context,
+                        "Uredi kliknut (nije implementirano)",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
 
                 holder.btnDelete.setOnClickListener {
@@ -128,8 +155,55 @@ class EventListActivity : AppCompatActivity() {
                     }
                 }
             }
+
+            // Glasanje
+            val auth = FirebaseAuth.getInstance()
+            val userId = auth.currentUser?.uid
+
+            if (userId == null) {
+                // Gost ne može glasati
+                holder.btnInterested.visibility = View.GONE
+                holder.btnNotInterested.visibility = View.GONE
+            } else {
+                val database = FirebaseDatabase.getInstance().reference
+                val votesRef = database.child("Events").child(event.id).child("votes")
+
+                // Provjeri je li korisnik već glasao
+                votesRef.child(userId).addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        val vote = snapshot.getValue(String::class.java)
+
+                        // Ako je već glasao – onemogući dugmad
+                        if (vote == "interested" || vote == "not_interested") {
+                            holder.btnInterested.isEnabled = false
+                            holder.btnNotInterested.isEnabled = false
+                        } else {
+                            holder.btnInterested.setOnClickListener {
+                                val eventRef = database.child("Events").child(event.id)
+                                eventRef.child("interestedCount").setValue(event.interestedCount + 1)
+                                votesRef.child(userId).setValue("interested")
+                                Toast.makeText(holder.itemView.context, "Glasano: zainteresiran", Toast.LENGTH_SHORT).show()
+                                holder.btnInterested.isEnabled = false
+                                holder.btnNotInterested.isEnabled = false
+                            }
+
+                            holder.btnNotInterested.setOnClickListener {
+                                val eventRef = database.child("Events").child(event.id)
+                                eventRef.child("notInterestedCount").setValue(event.notInterestedCount + 1)
+                                votesRef.child(userId).setValue("not_interested")
+                                Toast.makeText(holder.itemView.context, "Glasano: nije zainteresiran", Toast.LENGTH_SHORT).show()
+                                holder.btnInterested.isEnabled = false
+                                holder.btnNotInterested.isEnabled = false
+                            }
+                        }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {}
+                })
+            }
         }
 
         override fun getItemCount(): Int = items.size
     }
+
 }

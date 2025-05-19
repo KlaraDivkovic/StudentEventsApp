@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.storage.FirebaseStorage
 
 class AddEventActivity : AppCompatActivity() {
 
@@ -23,11 +22,11 @@ class AddEventActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.title = "BACK" //
+        supportActionBar?.title = "BACK"
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_event)
 
-        // Povezivanje s elementima iz layouta
+        // Povezivanje s layout elementima
         titleEditText = findViewById(R.id.editTextTitle)
         descriptionEditText = findViewById(R.id.editTextDescription)
         yearEditText = findViewById(R.id.editTextYear)
@@ -35,14 +34,13 @@ class AddEventActivity : AppCompatActivity() {
         saveButton = findViewById(R.id.buttonSaveEvent)
         selectImageButton = findViewById(R.id.buttonSelectImage)
 
-        // Odabir slike s uređaja
+        // Odabir slike
         selectImageButton.setOnClickListener {
             val intent = Intent(Intent.ACTION_GET_CONTENT)
             intent.type = "image/*"
             startActivityForResult(Intent.createChooser(intent, "Odaberi sliku"), PICK_IMAGE_REQUEST)
         }
 
-        // Spremanje događaja
         saveButton.setOnClickListener {
             val title = titleEditText.text.toString().trim()
             val description = descriptionEditText.text.toString().trim()
@@ -61,77 +59,40 @@ class AddEventActivity : AppCompatActivity() {
             }
 
             val ref = FirebaseDatabase.getInstance().getReference("Events")
-            val eventId = ref.push().key
+            val eventId = ref.push().key ?: return@setOnClickListener
 
-            if (eventId == null) {
-                Toast.makeText(this, "Greška s ID-jem događaja", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
+            val imageUrl = selectedImageUri?.toString()
+                ?: "android.resource://${packageName}/drawable/download"
 
-            // Ako je slika odabrana – uploadaj u Storage
-            if (selectedImageUri != null) {
-                val storageRef = FirebaseStorage.getInstance().getReference("event_images/$eventId.jpg")
+            val eventMap = mapOf(
+                "title" to title,
+                "description" to description,
+                "year" to yearInt,
+                "date" to date,
+                "imageUrl" to imageUrl
+            )
 
-                storageRef.putFile(selectedImageUri!!)
-                    .addOnSuccessListener {
-                        storageRef.downloadUrl.addOnSuccessListener { uri ->
-                            val imageUrl = uri.toString()
-
-                            val eventMap = mapOf(
-                                "title" to title,
-                                "description" to description,
-                                "year" to yearInt,
-                                "date" to date,
-                                "imageUrl" to imageUrl
-                            )
-
-                            ref.child(eventId).setValue(eventMap)
-                                .addOnSuccessListener {
-                                    Toast.makeText(this, "Događaj spremljen sa slikom!", Toast.LENGTH_SHORT).show()
-                                    finish()
-                                }
-                                .addOnFailureListener {
-                                    Toast.makeText(this, "Greška pri spremanju", Toast.LENGTH_SHORT).show()
-                                }
-                        }
-                    }
-                    .addOnFailureListener {
-                        Toast.makeText(this, "Greška pri učitavanju slike", Toast.LENGTH_SHORT).show()
-                    }
-            } else {
-                // Ako nije odabrana slika
-                val eventMap = mapOf(
-                    "title" to title,
-                    "description" to description,
-                    "year" to yearInt,
-                    "date" to date,
-                    "imageUrl" to "" // prazno
-                )
-
-                ref.child(eventId).setValue(eventMap)
-                    .addOnSuccessListener {
-                        Toast.makeText(this, "Događaj spremljen bez slike", Toast.LENGTH_SHORT).show()
-                        finish()
-                    }
-                    .addOnFailureListener {
-                        Toast.makeText(this, "Greška pri spremanju", Toast.LENGTH_SHORT).show()
-                    }
-            }
+            ref.child(eventId).setValue(eventMap)
+                .addOnSuccessListener {
+                    Toast.makeText(this, "Događaj spremljen!", Toast.LENGTH_SHORT).show()
+                    finish()
+                }
+                .addOnFailureListener {
+                    Toast.makeText(this, "Greška pri spremanju", Toast.LENGTH_SHORT).show()
+                }
         }
     }
-    override fun onSupportNavigateUp(): Boolean {
-        onBackPressedDispatcher.onBackPressed()
-        return true
-    }
 
-
-    // Obrada odabrane slike
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null && data.data != null) {
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data?.data != null) {
             selectedImageUri = data.data
             Toast.makeText(this, "Slika odabrana!", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressedDispatcher.onBackPressed()
+        return true
     }
 }

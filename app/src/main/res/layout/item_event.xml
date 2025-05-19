@@ -1,74 +1,108 @@
-<?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="12dp"
-    android:background="#DFF3E3"
-    app:cardCornerRadius="16dp"
-    app:cardElevation="6dp">
+    android:orientation="vertical"
+    android:padding="12dp"
+    android:background="#FFFFFF"
+    android:elevation="4dp"
+    android:layout_marginBottom="12dp">
 
+    <ImageView
+        android:id="@+id/imageEvent"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/download" />
+
+    <TextView
+        android:id="@+id/textTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Naslov"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:paddingTop="8dp" />
+
+    <TextView
+        android:id="@+id/textDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Opis"
+        android:textSize="14sp"
+        android:paddingTop="4dp" />
+
+    <!-- Admin dugmad (centrirano) -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center_horizontal"
-        android:padding="16dp">
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:paddingTop="8dp">
 
-        <!-- Slika događaja -->
-        <ImageView
-            android:id="@+id/eventImage"
-            android:layout_width="match_parent"
-            android:layout_height="180dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/download"
-            android:contentDescription="Slika događaja"
-            android:layout_marginBottom="12dp"/>
-
-
-        <!-- Naslov -->
-        <TextView
-            android:id="@+id/textTitle"
+        <Button
+            android:id="@+id/buttonEdit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Naslov događaja"
-            android:textStyle="bold"
-            android:textSize="18sp"
-            android:textColor="#2C5F2D"
-            android:gravity="center"
-            android:layout_marginBottom="4dp"/>
+            android:text="Uredi"
+            android:backgroundTint="#2C5F2D"
+            android:textColor="#FFFFFF" />
 
-        <!-- Opis -->
-        <TextView
-            android:id="@+id/textDescription"
+        <Button
+            android:id="@+id/buttonDelete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Opis događaja"
-            android:textSize="14sp"
-            android:textColor="#333"
-            android:gravity="center"/>
-
-        <!-- Gumbi ako je admin -->
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="12dp">
-
-            <Button
-                android:id="@+id/buttonEdit"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Uredi"
-                android:visibility="gone"/>
-
-            <Button
-                android:id="@+id/buttonDelete"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Obriši"
-                android:layout_marginStart="8dp"
-                android:visibility="gone"/>
-        </LinearLayout>
+            android:text="Obriši"
+            android:backgroundTint="#2C5F2D"
+            android:textColor="#FFFFFF"
+            android:layout_marginStart="8dp" />
     </LinearLayout>
-</androidx.cardview.widget.CardView>
+
+    <!-- Glasanje -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="8dp">
+
+        <Button
+            android:id="@+id/buttonInterested"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Zainteresiran sam"
+            android:backgroundTint="#2C5F2D"
+            android:textColor="#FFFFFF" />
+
+        <Button
+            android:id="@+id/buttonNotInterested"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nisam zainteresiran"
+            android:backgroundTint="#2C5F2D"
+            android:textColor="#FFFFFF"
+            android:layout_marginStart="8dp" />
+    </LinearLayout>
+
+    <!-- Brojači -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="4dp"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/textInterestedCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Zainteresirani: 0"
+            android:layout_marginEnd="12dp" />
+
+        <TextView
+            android:id="@+id/textNotInterestedCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nisu zainteresirani: 0" />
+    </LinearLayout>
+
+</LinearLayout>

@@ -65,7 +65,7 @@ class LoginActivity : AppCompatActivity() {
                         }
                     }
             } else {
-                Toast.makeText(this, "Popuni sva polja", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Popunite sva polja", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -89,7 +89,7 @@ class LoginActivity : AppCompatActivity() {
                         Toast.makeText(this, "Greška: ${it.message}", Toast.LENGTH_LONG).show()
                     }
             } else {
-                Toast.makeText(this, "Unesi email za reset lozinke", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Unesite email za reset lozinke", Toast.LENGTH_SHORT).show()
             }
         }
 
