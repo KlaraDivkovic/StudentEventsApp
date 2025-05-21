@@ -1,5 +1,6 @@
 package ba.sum.fpmoz.example.studenteventsapp
 
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -19,6 +20,7 @@ class EventListActivity : AppCompatActivity() {
     private lateinit var database: DatabaseReference
     private lateinit var auth: FirebaseAuth
     private val events = mutableListOf<Event>()
+    private var isGuest = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,6 +64,7 @@ class EventListActivity : AppCompatActivity() {
                     }
                 })
         } else {
+            isGuest = true
             Toast.makeText(this, "Pregledavate događaje kao gost.", Toast.LENGTH_SHORT).show()
             loadEvents(false)
         }
@@ -77,7 +80,7 @@ class EventListActivity : AppCompatActivity() {
                         events.add(event.copy(id = child.key ?: ""))
                     }
                 }
-                recyclerView.adapter = EventAdapter(events, isAdmin)
+                recyclerView.adapter = EventAdapter(events, isAdmin, isGuest)
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -92,7 +95,8 @@ class EventListActivity : AppCompatActivity() {
 
     class EventAdapter(
         private val items: List<Event>,
-        private val isAdmin: Boolean
+        private val isAdmin: Boolean,
+        private val isGuest: Boolean
     ) : RecyclerView.Adapter<EventAdapter.EventViewHolder>() {
 
         inner class EventViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -118,25 +122,43 @@ class EventListActivity : AppCompatActivity() {
             holder.title.text = event.title
             holder.description.text = event.description
 
-            // Prikaz slike
             Glide.with(holder.itemView.context)
                 .load(Uri.parse(event.imageUrl))
                 .placeholder(R.drawable.download)
                 .error(R.drawable.download)
                 .into(holder.image)
 
-            // Prikaz broja glasova
-            holder.textInterested.text = "Zainteresirani: ${event.interestedCount}"
-            holder.textNotInterested.text = "Nisu zainteresirani: ${event.notInterestedCount}"
+            if (isGuest) {
+                holder.textInterested.visibility = View.GONE
+                holder.textNotInterested.visibility = View.GONE
+            } else {
+                holder.textInterested.text = "Zainteresirani: ${event.interestedCount}"
+                holder.textNotInterested.text = "Nisu zainteresirani: ${event.notInterestedCount}"
+                holder.textInterested.visibility = View.VISIBLE
+                holder.textNotInterested.visibility = View.VISIBLE
+            }
 
-            // Admin prikaz
+            if (!isGuest) {
+                holder.itemView.setOnClickListener {
+                    val context = holder.itemView.context
+                    val intent = Intent(context, EventDetailActivity::class.java)
+                    intent.putExtra("eventId", event.id)
+                    intent.putExtra("title", event.title)
+                    intent.putExtra("year", event.year)
+                    intent.putExtra("date", event.date)
+                    intent.putExtra("imageUrl", event.imageUrl)
+                    intent.putExtra("interestedCount", event.interestedCount)
+                    intent.putExtra("notInterestedCount", event.notInterestedCount)
+                    context.startActivity(intent)
+                }
+            }
+
             if (!isAdmin) {
                 holder.btnEdit.visibility = View.GONE
                 holder.btnDelete.visibility = View.GONE
             } else {
                 holder.btnEdit.visibility = View.VISIBLE
                 holder.btnDelete.visibility = View.VISIBLE
-
                 holder.btnEdit.setOnClickListener {
                     Toast.makeText(
                         holder.itemView.context,
@@ -144,7 +166,6 @@ class EventListActivity : AppCompatActivity() {
                         Toast.LENGTH_SHORT
                     ).show()
                 }
-
                 holder.btnDelete.setOnClickListener {
                     val context = holder.itemView.context
                     val database = FirebaseDatabase.getInstance().getReference("Events")
@@ -156,24 +177,19 @@ class EventListActivity : AppCompatActivity() {
                 }
             }
 
-            // Glasanje
             val auth = FirebaseAuth.getInstance()
             val userId = auth.currentUser?.uid
 
-            if (userId == null) {
-                // Gost ne može glasati
+            if (userId == null || isGuest) {
                 holder.btnInterested.visibility = View.GONE
                 holder.btnNotInterested.visibility = View.GONE
             } else {
                 val database = FirebaseDatabase.getInstance().reference
                 val votesRef = database.child("Events").child(event.id).child("votes")
 
-                // Provjeri je li korisnik već glasao
                 votesRef.child(userId).addListenerForSingleValueEvent(object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         val vote = snapshot.getValue(String::class.java)
-
-                        // Ako je već glasao – onemogući dugmad
                         if (vote == "interested" || vote == "not_interested") {
                             holder.btnInterested.isEnabled = false
                             holder.btnNotInterested.isEnabled = false
@@ -186,7 +202,6 @@ class EventListActivity : AppCompatActivity() {
                                 holder.btnInterested.isEnabled = false
                                 holder.btnNotInterested.isEnabled = false
                             }
-
                             holder.btnNotInterested.setOnClickListener {
                                 val eventRef = database.child("Events").child(event.id)
                                 eventRef.child("notInterestedCount").setValue(event.notInterestedCount + 1)
@@ -205,5 +220,4 @@ class EventListActivity : AppCompatActivity() {
 
         override fun getItemCount(): Int = items.size
     }
-
 }

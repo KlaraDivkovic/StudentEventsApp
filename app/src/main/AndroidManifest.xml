@@ -14,7 +14,10 @@
         android:theme="@style/Theme.StudentEventsApp"
         tools:targetApi="31">
 
-        <!-- HomeActivity je sada početna (launcher) aktivnost -->
+        <activity
+            android:name=".EventDetailActivity"
+            android:exported="false" />
+
         <activity
             android:name=".HomeActivity"
             android:exported="true">
@@ -32,4 +35,5 @@
         <activity android:name=".MainActivity" android:exported="false" />
 
     </application>
+
 </manifest>
