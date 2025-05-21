@@ -24,7 +24,7 @@ class HomeActivity : AppCompatActivity() {
         val currentUser = FirebaseAuth.getInstance().currentUser
 
         if (currentUser != null) {
-            // Ako je korisnik već prijavljen – idi odmah na MainActivity
+
             val intent = Intent(this, MainActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)

@@ -17,17 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
-
-data class Event(
-    val id: String = "",
-    val title: String = "",
-    val description: String = "",
-    val year: Int = 0,
-    val date: String = "",
-    val imageUrl: String = "",
-    val interestedCount: Int = 0,
-    val notInterestedCount: Int = 0
-)
+import ba.sum.fpmoz.example.studenteventsapp.Event
 
 class EditEventActivity : AppCompatActivity() {
 
@@ -128,27 +118,28 @@ class EditEventActivity : AppCompatActivity() {
             holder.title.text = event.title
             holder.description.text = event.description
 
-            // Glide za sliku
             Glide.with(holder.itemView.context)
                 .load(Uri.parse(event.imageUrl))
                 .placeholder(R.drawable.download)
                 .error(R.drawable.download)
                 .into(holder.image)
 
-            // AUTOMATSKI UPDATE BROJA GLASOVA
-            val eventRef = FirebaseDatabase.getInstance().getReference("Events").child(event.id)
-            eventRef.addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    val interested = snapshot.child("interestedCount").getValue(Int::class.java) ?: 0
-                    val notInterested = snapshot.child("notInterestedCount").getValue(Int::class.java) ?: 0
-                    holder.textInterested.text = "Zainteresirani: $interested"
-                    holder.textNotInterested.text = "Nisu zainteresirani: $notInterested"
-                }
+            holder.textInterested.text = "Zainteresirani: ${event.interestedCount}"
+            holder.textNotInterested.text = "Nisu zainteresirani: ${event.notInterestedCount}"
 
-                override fun onCancelled(error: DatabaseError) {}
-            })
+            holder.itemView.setOnClickListener {
+                val context = holder.itemView.context
+                val intent = Intent(context, EventDetailActivity::class.java)
+                intent.putExtra("eventId", event.id)
+                intent.putExtra("title", event.title)
+                intent.putExtra("year", event.year)
+                intent.putExtra("date", event.date)
+                intent.putExtra("imageUrl", event.imageUrl)
+                intent.putExtra("interestedCount", event.interestedCount)
+                intent.putExtra("notInterestedCount", event.notInterestedCount)
+                context.startActivity(intent)
+            }
 
-            // ADMIN DUGMAD
             if (!isAdmin) {
                 holder.btnEdit.visibility = View.GONE
                 holder.btnDelete.visibility = View.GONE
@@ -175,7 +166,6 @@ class EditEventActivity : AppCompatActivity() {
                 }
             }
 
-            // GLASANJE
             val auth = FirebaseAuth.getInstance()
             val userId = auth.currentUser?.uid
 
@@ -183,7 +173,7 @@ class EditEventActivity : AppCompatActivity() {
                 holder.btnInterested.visibility = View.GONE
                 holder.btnNotInterested.visibility = View.GONE
             } else {
-                val votesRef = eventRef.child("votes")
+                val votesRef = FirebaseDatabase.getInstance().getReference("Events").child(event.id).child("votes")
 
                 votesRef.child(userId).addListenerForSingleValueEvent(object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
@@ -194,33 +184,19 @@ class EditEventActivity : AppCompatActivity() {
                             holder.btnNotInterested.isEnabled = false
                         } else {
                             holder.btnInterested.setOnClickListener {
-                                eventRef.child("interestedCount")
-                                    .runTransaction(object : Transaction.Handler {
-                                        override fun doTransaction(mutableData: MutableData): Transaction.Result {
-                                            val current = mutableData.getValue(Int::class.java) ?: 0
-                                            mutableData.value = current + 1
-                                            return Transaction.success(mutableData)
-                                        }
-
-                                        override fun onComplete(error: DatabaseError?, committed: Boolean, snapshot: DataSnapshot?) {}
-                                    })
+                                val eventRef = FirebaseDatabase.getInstance().getReference("Events").child(event.id)
+                                eventRef.child("interestedCount").setValue(event.interestedCount + 1)
                                 votesRef.child(userId).setValue("interested")
+                                Toast.makeText(holder.itemView.context, "Glasano: zainteresiran", Toast.LENGTH_SHORT).show()
                                 holder.btnInterested.isEnabled = false
                                 holder.btnNotInterested.isEnabled = false
                             }
 
                             holder.btnNotInterested.setOnClickListener {
-                                eventRef.child("notInterestedCount")
-                                    .runTransaction(object : Transaction.Handler {
-                                        override fun doTransaction(mutableData: MutableData): Transaction.Result {
-                                            val current = mutableData.getValue(Int::class.java) ?: 0
-                                            mutableData.value = current + 1
-                                            return Transaction.success(mutableData)
-                                        }
-
-                                        override fun onComplete(error: DatabaseError?, committed: Boolean, snapshot: DataSnapshot?) {}
-                                    })
+                                val eventRef = FirebaseDatabase.getInstance().getReference("Events").child(event.id)
+                                eventRef.child("notInterestedCount").setValue(event.notInterestedCount + 1)
                                 votesRef.child(userId).setValue("not_interested")
+                                Toast.makeText(holder.itemView.context, "Glasano: nije zainteresiran", Toast.LENGTH_SHORT).show()
                                 holder.btnInterested.isEnabled = false
                                 holder.btnNotInterested.isEnabled = false
                             }

@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#E6F1E8"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/imageDetail"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:scaleType="centerCrop"
+            android:layout_marginBottom="16dp"
+            android:contentDescription="Slika događaja" />
+
+        <TextView
+            android:id="@+id/textTitleDetail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Naslov događaja"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:textColor="#2C5F2D"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:id="@+id/textLongDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="(Detaljan opis događaja)"
+            android:textSize="16sp"
+            android:layout_marginBottom="16dp"
+            android:lineSpacingExtra="4dp" />
+
+        <TextView
+            android:id="@+id/textFacultyDetail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="🏫 Fakultet:"
+            android:textSize="15sp"
+            android:layout_marginBottom="4dp" />
+
+        <TextView
+            android:id="@+id/textYearDetail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="🎓 Godina studiranja: "
+            android:textSize="15sp"
+            android:layout_marginBottom="4dp" />
+
+        <TextView
+            android:id="@+id/textDateDetail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="📅 Datum održavanja: "
+            android:textSize="15sp"
+            android:layout_marginBottom="4dp" />
+
+        <TextView
+            android:id="@+id/textPlaceDetail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="📍 Mjesto: "
+            android:textSize="15sp"
+            android:layout_marginBottom="4dp" />
+
+        <TextView
+            android:id="@+id/textTimeDetail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="🕔 Vrijeme: "
+            android:textSize="15sp"
+            android:layout_marginBottom="16dp" />
+
+        <TextView
+            android:id="@+id/textInterestedDetail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="✅ Zainteresirani: 0"
+            android:textSize="14sp"
+            android:layout_marginBottom="4dp" />
+
+        <TextView
+            android:id="@+id/textNotInterestedDetail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="❌ Nisu zainteresirani: 0"
+            android:textSize="14sp"
+            android:layout_marginBottom="16dp" />
+
+        <LinearLayout
+            android:id="@+id/adminButtonsLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/buttonEditEvent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Uredi"
+                android:backgroundTint="#2C5F2D"
+                android:textColor="#FFFFFF"
+                android:layout_marginEnd="8dp" />
+
+            <Button
+                android:id="@+id/buttonDeleteEvent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Obriši"
+                android:backgroundTint="#680A0A"
+                android:textColor="#FFFFFF" />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

@@ -3,133 +3,157 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#E6F1E8">
+    android:background="#E6F1E8"
+    android:fillViewport="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:padding="24dp">
 
-        <TextView
-            android:id="@+id/title"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/registerForm"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="StudentEventApp"
-            android:textSize="28sp"
-            android:textStyle="bold"
-            android:textColor="#2C5F2D"
+            android:orientation="vertical"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
-
-        <TextView
-            android:id="@+id/subtitle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="Pridružite se studentskim događajima i druženjima!"
-            android:gravity="center"
-            android:textAlignment="center"
-            android:textSize="14sp"
-            android:textColor="#4C4C4C"
-            app:layout_constraintTop_toBottomOf="@id/title"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="8dp" />
+            app:layout_constraintVertical_bias="0.5">
 
-        <EditText
-            android:id="@+id/firstNameEditText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:hint="First name"
-            android:padding="12dp"
-            android:layout_marginTop="24dp"
-            android:layout_marginEnd="8dp"
-            app:layout_constraintTop_toBottomOf="@id/subtitle"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/lastNameEditText"
-            app:layout_constraintHorizontal_chainStyle="spread_inside" />
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="StudentEventApp"
+                android:textSize="28sp"
+                android:textStyle="bold"
+                android:textColor="#2C5F2D"
+                android:layout_gravity="center_horizontal" />
 
-        <EditText
-            android:id="@+id/lastNameEditText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:hint="Last name"
-            android:padding="12dp"
-            android:layout_marginStart="8dp"
-            app:layout_constraintTop_toTopOf="@id/firstNameEditText"
-            app:layout_constraintStart_toEndOf="@id/firstNameEditText"
-            app:layout_constraintEnd_toEndOf="parent" />
+            <TextView
+                android:id="@+id/subtitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Pridružite se studentskim događajima i druženjima!"
+                android:gravity="center"
+                android:textAlignment="center"
+                android:textSize="14sp"
+                android:textColor="#4C4C4C"
+                android:layout_marginTop="8dp" />
 
-        <EditText
-            android:id="@+id/facultyEditText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:hint="Faculty"
-            android:padding="12dp"
-            app:layout_constraintTop_toBottomOf="@id/firstNameEditText"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="16dp" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="24dp">
 
-        <EditText
-            android:id="@+id/yearEditText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:hint="Year"
-            android:inputType="number"
-            android:padding="12dp"
-            app:layout_constraintTop_toBottomOf="@id/facultyEditText"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="16dp" />
+                <EditText
+                    android:id="@+id/firstNameEditText"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:hint="First name"
+                    android:padding="12dp"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="4dp" />
 
-        <EditText
-            android:id="@+id/emailEditText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:hint="Email"
-            android:inputType="textEmailAddress"
-            android:padding="12dp"
-            app:layout_constraintTop_toBottomOf="@id/yearEditText"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="16dp" />
+                <EditText
+                    android:id="@+id/lastNameEditText"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:hint="Last name"
+                    android:padding="12dp"
+                    android:layout_weight="1"
+                    android:layout_marginStart="4dp" />
+            </LinearLayout>
 
-        <EditText
-            android:id="@+id/passwordEditText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:hint="Password"
-            android:inputType="textPassword"
-            android:padding="12dp"
-            app:layout_constraintTop_toBottomOf="@id/emailEditText"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="16dp" />
+            <EditText
+                android:id="@+id/dateOfBirthEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Date of Birth"
+                android:focusable="false"
+                android:inputType="none"
+                android:padding="12dp"
+                android:drawableEnd="@android:drawable/ic_menu_my_calendar"
+                android:layout_marginTop="16dp" />
 
-        <Button
-            android:id="@+id/registerButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="Sign up"
-            android:backgroundTint="#2C5F2D"
-            android:textColor="#FFFFFF"
-            app:layout_constraintTop_toBottomOf="@id/passwordEditText"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="24dp" />
+            <AutoCompleteTextView
+                android:id="@+id/facultyEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Faculty"
+                android:padding="12dp"
+                android:background="?android:attr/editTextBackground"
+                android:drawableEnd="@android:drawable/arrow_down_float"
+                android:inputType="none"
+                android:focusable="false"
+                android:layout_marginTop="16dp"
+                android:dropDownHeight="wrap_content"
+                android:dropDownVerticalOffset="4dp"
+                android:dropDownAnchor="@id/facultyEditText" />
 
-        <TextView
-            android:id="@+id/loginRedirect"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Already have an account? Log in"
-            android:textSize="13sp"
-            android:textColor="#2C5F2D"
-            app:layout_constraintTop_toBottomOf="@id/registerButton"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="20dp" />
+            <AutoCompleteTextView
+                android:id="@+id/yearEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Year"
+                android:padding="12dp"
+                android:background="?android:attr/editTextBackground"
+                android:drawableEnd="@android:drawable/arrow_down_float"
+                android:inputType="none"
+                android:focusable="false"
+                android:layout_marginTop="16dp"
+                android:dropDownHeight="wrap_content"
+                android:dropDownVerticalOffset="4dp"
+                android:dropDownAnchor="@id/yearEditText" />
 
+            <EditText
+                android:id="@+id/emailEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Email"
+                android:inputType="textEmailAddress"
+                android:padding="12dp"
+                android:layout_marginTop="16dp" />
+
+            <EditText
+                android:id="@+id/passwordEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Password"
+                android:inputType="textPassword"
+                android:padding="12dp"
+                android:layout_marginTop="16dp" />
+
+            <EditText
+                android:id="@+id/confirmPasswordEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Confirm Password"
+                android:inputType="textPassword"
+                android:padding="12dp"
+                android:layout_marginTop="16dp" />
+
+            <Button
+                android:id="@+id/registerButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Sign up"
+                android:backgroundTint="#2C5F2D"
+                android:textColor="#FFFFFF"
+                android:layout_marginTop="24dp" />
+
+            <TextView
+                android:id="@+id/loginRedirect"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Already have an account? Log in"
+                android:textSize="13sp"
+                android:textColor="#2C5F2D"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="20dp" />
+        </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

@@ -46,30 +46,26 @@ class MainActivity : AppCompatActivity() {
                     }
                 })
         } else {
-            // GOST
+
             binding.addEventButton.visibility = View.GONE
             binding.logoutButton.visibility = View.GONE
         }
 
-        // ✅ ODJAVA + Povratak na HomeActivity
-        binding.logoutButton.setOnClickListener {
-            auth.signOut()
-            Toast.makeText(this, "Odjavljeni ste.", Toast.LENGTH_SHORT).show()
-
-            // Vrati se na početni ekran (HomeActivity)
-            val intent = Intent(this, HomeActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            startActivity(intent)
-        }
-
-        // Prikaz događaja
         binding.viewEventsButton.setOnClickListener {
             startActivity(Intent(this, EventListActivity::class.java))
         }
 
-        // Dodaj događaj (admin)
         binding.addEventButton.setOnClickListener {
             startActivity(Intent(this, AddEventActivity::class.java))
+        }
+
+        binding.logoutButton.setOnClickListener {
+            auth.signOut()
+            Toast.makeText(this, "Odjavljeni ste", Toast.LENGTH_SHORT).show()
+
+            val intent = Intent(this, HomeActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(intent)
         }
     }
 

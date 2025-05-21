@@ -31,7 +31,6 @@
         android:textSize="14sp"
         android:paddingTop="4dp" />
 
-    <!-- Admin dugmad (centrirano) -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -57,7 +56,6 @@
             android:layout_marginStart="8dp" />
     </LinearLayout>
 
-    <!-- Glasanje -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -67,23 +65,25 @@
 
         <Button
             android:id="@+id/buttonInterested"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Zainteresiran sam"
+            android:layout_weight="1"
+            android:text="Zainteresiran/a sam"
             android:backgroundTint="#2C5F2D"
-            android:textColor="#FFFFFF" />
+            android:textColor="#FFFFFF"
+            android:layout_marginEnd="4dp" />
 
         <Button
             android:id="@+id/buttonNotInterested"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Nisam zainteresiran"
-            android:backgroundTint="#2C5F2D"
+            android:layout_weight="1"
+            android:text="Nisam zainteresiran/a"
+            android:backgroundTint="#D32F2F"
             android:textColor="#FFFFFF"
-            android:layout_marginStart="8dp" />
+            android:layout_marginStart="4dp" />
     </LinearLayout>
 
-    <!-- Brojači -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -54,6 +54,8 @@ dependencies {
 
     // Ostalo
     implementation ("com.google.firebase:firebase-storage:20.3.0")
+    implementation ("com.google.android.material:material:1.11.0")
+
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

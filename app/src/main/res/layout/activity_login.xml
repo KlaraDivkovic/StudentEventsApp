@@ -3,119 +3,136 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#E6F1E8">
+    android:background="#E6F1E8"
+    android:fillViewport="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:padding="24dp">
 
-        <!-- NASLOV -->
-        <TextView
-            android:id="@+id/title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="StudentEventApp"
-            android:textSize="28sp"
-            android:textStyle="bold"
-            android:textColor="#2C5F2D"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
-
-        <!-- PODNASLOV -->
-        <TextView
-            android:id="@+id/subtitle"
+        <LinearLayout
+            android:id="@+id/loginForm"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Prijavite se i pridružite studentskim događajima!"
-            android:textSize="14sp"
-            android:textColor="#4C4C4C"
-            android:textAlignment="center"
+            android:orientation="vertical"
             android:gravity="center"
-            android:layout_marginTop="6dp"
-            app:layout_constraintTop_toBottomOf="@id/title"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
-
-        <!-- EMAIL -->
-        <EditText
-            android:id="@+id/emailEditText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:hint="Email"
-            android:inputType="textEmailAddress"
-            android:padding="12dp"
-            android:backgroundTint="#2C5F2D"
-            app:layout_constraintTop_toBottomOf="@id/subtitle"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="24dp" />
+            app:layout_constraintVertical_bias="0.35">
 
-        <!-- PASSWORD -->
-        <EditText
-            android:id="@+id/passwordEditText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:hint="Password"
-            android:inputType="textPassword"
-            android:padding="12dp"
-            android:backgroundTint="#2C5F2D"
-            app:layout_constraintTop_toBottomOf="@id/emailEditText"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="16dp" />
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="StudentEventApp"
+                android:textSize="28sp"
+                android:textStyle="bold"
+                android:textColor="#2C5F2D"
+                android:layout_marginBottom="6dp" />
 
-        <!-- ZABORAVLJENA LOZINKA -->
-        <TextView
-            android:id="@+id/forgotPasswordText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Forgot password?"
-            android:textColor="#2C5F2D"
-            android:textSize="13sp"
-            app:layout_constraintTop_toBottomOf="@id/passwordEditText"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="8dp" />
+            <TextView
+                android:id="@+id/subtitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Prijavite se i pridružite studentskim događajima!"
+                android:textSize="14sp"
+                android:textColor="#4C4C4C"
+                android:textAlignment="center"
+                android:gravity="center"
+                android:layout_marginBottom="24dp" />
 
-        <!-- LOGIN GUMB -->
-        <Button
-            android:id="@+id/loginButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="Log in"
-            android:backgroundTint="#2C5F2D"
-            android:textColor="#FFFFFF"
-            android:layout_marginTop="8dp"
-            app:layout_constraintTop_toBottomOf="@id/forgotPasswordText"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            <EditText
+                android:id="@+id/emailEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Email"
+                android:inputType="textEmailAddress"
+                android:padding="12dp"
+                android:backgroundTint="#2C5F2D"
+                android:layout_marginBottom="16dp" />
 
-        <!-- GOOGLE LOGIN -->
-        <Button
-            android:id="@+id/googleLoginButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="Continue with Google"
-            android:backgroundTint="#2C5F2D"
-            android:textColor="#FFFFFF"
-            android:layout_marginTop="12dp"
-            app:layout_constraintTop_toBottomOf="@id/loginButton"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            <EditText
+                android:id="@+id/passwordEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Password"
+                android:inputType="textPassword"
+                android:padding="12dp"
+                android:backgroundTint="#2C5F2D"
+                android:layout_marginBottom="8dp" />
 
-        <!-- REDIREKCIJA NA REGISTRACIJU -->
-        <TextView
-            android:id="@+id/registerRedirect"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Don't have an account? Sign up"
-            android:textSize="13sp"
-            android:textColor="#000000"
-            app:layout_constraintTop_toBottomOf="@id/googleLoginButton"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="20dp" />
+            <TextView
+                android:id="@+id/forgotPasswordText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Forgot password?"
+                android:textColor="#2C5F2D"
+                android:textSize="13sp"
+                android:layout_gravity="end"
+                android:layout_marginBottom="12dp" />
 
+            <Button
+                android:id="@+id/loginButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Log in"
+                android:backgroundTint="#2C5F2D"
+                android:textColor="#FFFFFF"
+                android:layout_marginBottom="16dp" />
+
+            <LinearLayout
+                android:id="@+id/orDivider"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_marginBottom="16dp">
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1"
+                    android:background="#AAAAAA" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="or"
+                    android:textColor="#777777"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1"
+                    android:background="#AAAAAA" />
+            </LinearLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/googleLoginButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="  Continue with Google"
+                android:textColor="#000000"
+                android:backgroundTint="#FFFFFF"
+                app:icon="@drawable/ic_google"
+                app:iconPadding="8dp"
+                app:iconGravity="textStart"
+                app:iconTint="@null"
+                android:layout_marginBottom="24dp" />
+
+            <TextView
+                android:id="@+id/registerRedirect"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Don't have an account? Sign up"
+                android:textSize="13sp"
+                android:textColor="#000000"
+                android:layout_gravity="center_horizontal" />
+        </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

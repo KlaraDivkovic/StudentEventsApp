@@ -7,7 +7,6 @@
     android:background="#E6F1E8"
     android:padding="24dp">
 
-    <!-- Naslov -->
     <EditText
         android:id="@+id/editTitle"
         android:layout_width="0dp"
@@ -21,7 +20,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <!-- Opis -->
     <EditText
         android:id="@+id/editDescription"
         android:layout_width="0dp"
@@ -36,7 +34,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <!-- Godina -->
     <EditText
         android:id="@+id/editYear"
         android:layout_width="0dp"
@@ -51,7 +48,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <!-- Datum -->
     <EditText
         android:id="@+id/editDate"
         android:layout_width="0dp"
@@ -66,7 +62,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <!-- Slika događaja -->
     <ImageView
         android:id="@+id/imageViewEvent"
         android:layout_width="0dp"
@@ -79,7 +74,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Gumb za promjenu slike -->
     <Button
         android:id="@+id/buttonChangeImage"
         android:layout_width="0dp"
@@ -92,7 +86,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <!-- Gumb za spremanje promjena -->
     <Button
         android:id="@+id/buttonSaveChanges"
         android:layout_width="0dp"

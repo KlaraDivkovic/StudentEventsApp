@@ -26,7 +26,6 @@ class AddEventActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_event)
 
-        // Povezivanje s layout elementima
         titleEditText = findViewById(R.id.editTextTitle)
         descriptionEditText = findViewById(R.id.editTextDescription)
         yearEditText = findViewById(R.id.editTextYear)
@@ -34,7 +33,6 @@ class AddEventActivity : AppCompatActivity() {
         saveButton = findViewById(R.id.buttonSaveEvent)
         selectImageButton = findViewById(R.id.buttonSelectImage)
 
-        // Odabir slike
         selectImageButton.setOnClickListener {
             val intent = Intent(Intent.ACTION_GET_CONTENT)
             intent.type = "image/*"

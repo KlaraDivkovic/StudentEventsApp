@@ -27,21 +27,20 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.title = "⬅\uFE0F" // (možeš promijeniti prema stranici)
+        supportActionBar?.title = "⬅\uFE0F"
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
         auth = FirebaseAuth.getInstance()
 
-        // 🔐 Google prijava konfiguracija
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.default_web_client_id))
             .requestEmail()
             .build()
         googleSignInClient = GoogleSignIn.getClient(this, gso)
 
-        // 🔗 UI elementi
+
         val emailEditText: EditText = findViewById(R.id.emailEditText)
         val passwordEditText: EditText = findViewById(R.id.passwordEditText)
         val loginButton: Button = findViewById(R.id.loginButton)
@@ -49,7 +48,6 @@ class LoginActivity : AppCompatActivity() {
         val registerRedirect: TextView = findViewById(R.id.registerRedirect)
         val forgotPasswordText: TextView = findViewById(R.id.forgotPasswordText)
 
-        // 📧 Prijava s emailom i lozinkom
         loginButton.setOnClickListener {
             val email = emailEditText.text.toString().trim()
             val password = passwordEditText.text.toString().trim()
@@ -69,7 +67,6 @@ class LoginActivity : AppCompatActivity() {
             }
         }
 
-        // 🟢 Prijava putem Google-a
         googleLoginButton.setOnClickListener {
             googleSignInClient.signOut().addOnCompleteListener {
                 val signInIntent = googleSignInClient.signInIntent
@@ -77,7 +74,6 @@ class LoginActivity : AppCompatActivity() {
             }
         }
 
-        // 🔁 Reset lozinke
         forgotPasswordText.setOnClickListener {
             val email = emailEditText.text.toString().trim()
             if (email.isNotEmpty()) {
@@ -93,7 +89,6 @@ class LoginActivity : AppCompatActivity() {
             }
         }
 
-        // ✨ Link "Sign up" stiliziran
         val fullText = "Don't have an account? Sign up"
         val spannable = SpannableString(fullText)
         val greenColor = Color.parseColor("#2C5F2D")
@@ -123,8 +118,6 @@ class LoginActivity : AppCompatActivity() {
         return true
     }
 
-
-    // 🎯 Prelazak na MainActivity nakon uspješne prijave
     private fun goToMainActivity() {
         val intent = Intent(this, MainActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -132,7 +125,6 @@ class LoginActivity : AppCompatActivity() {
         finish()
     }
 
-    // 🔐 Prijava Google korisnika
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
