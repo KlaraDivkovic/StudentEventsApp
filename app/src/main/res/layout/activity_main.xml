@@ -1,25 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/rootLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center"
-    android:padding="32dp"
-    android:background="#E6F1E8"
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".MainActivity">
+    android:padding="24dp"
+    android:background="#E6F1E8">
 
-    <TextView
-        android:id="@+id/welcomeText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="StudentEventsApp"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:textColor="#2C5F2D"
-        android:layout_marginBottom="32dp" />
+    <!-- LOGO IZNAD NASLOVA -->
+    <ImageView
+        android:id="@+id/logoMain"
+        android:layout_width="184dp"
+        android:layout_height="186dp"
+        android:layout_marginBottom="12dp"
+        android:contentDescription="Logo"
+        android:src="@drawable/logo" />
 
+    <!-- NASLOV -->
+
+    <!-- GUMBI -->
     <Button
         android:id="@+id/viewEventsButton"
         android:layout_width="match_parent"
@@ -36,8 +35,7 @@
         android:text="Dodaj događaj"
         android:backgroundTint="#2C5F2D"
         android:textColor="#FFFFFF"
-        android:layout_marginBottom="16dp"
-        android:visibility="gone" />
+        android:layout_marginBottom="16dp" />
 
     <Button
         android:id="@+id/logoutButton"
@@ -46,5 +44,4 @@
         android:text="Log out"
         android:backgroundTint="#FFFFFF"
         android:textColor="#2C5F2D" />
-
 </LinearLayout>

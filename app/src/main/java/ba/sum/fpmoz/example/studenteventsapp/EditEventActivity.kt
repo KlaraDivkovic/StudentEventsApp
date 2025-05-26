@@ -1,23 +1,19 @@
 package ba.sum.fpmoz.example.studenteventsapp
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.TextView
-import android.widget.Toast
-import android.net.Uri
-import android.widget.ImageView
-import com.bumptech.glide.Glide
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
-import ba.sum.fpmoz.example.studenteventsapp.Event
 
 class EditEventActivity : AppCompatActivity() {
 
@@ -72,7 +68,7 @@ class EditEventActivity : AppCompatActivity() {
     }
 
     private fun loadEvents(isAdmin: Boolean) {
-        database.child("Events").addListenerForSingleValueEvent(object : ValueEventListener {
+        database.child("Events").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 events.clear()
                 for (child in snapshot.children) {
@@ -105,6 +101,9 @@ class EditEventActivity : AppCompatActivity() {
             val btnNotInterested: Button = view.findViewById(R.id.buttonNotInterested)
             val textInterested: TextView = view.findViewById(R.id.textInterestedCount)
             val textNotInterested: TextView = view.findViewById(R.id.textNotInterestedCount)
+            val commentInput: EditText = view.findViewById(R.id.editTextComment)
+            val submitComment: Button = view.findViewById(R.id.buttonSubmitComment)
+            val commentsLayout: LinearLayout = view.findViewById(R.id.commentsLayout)
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventViewHolder {
@@ -127,52 +126,39 @@ class EditEventActivity : AppCompatActivity() {
             holder.textInterested.text = "Zainteresirani: ${event.interestedCount}"
             holder.textNotInterested.text = "Nisu zainteresirani: ${event.notInterestedCount}"
 
-            holder.itemView.setOnClickListener {
-                val context = holder.itemView.context
-                val intent = Intent(context, EventDetailActivity::class.java)
-                intent.putExtra("eventId", event.id)
-                intent.putExtra("title", event.title)
-                intent.putExtra("year", event.year)
-                intent.putExtra("date", event.date)
-                intent.putExtra("imageUrl", event.imageUrl)
-                intent.putExtra("interestedCount", event.interestedCount)
-                intent.putExtra("notInterestedCount", event.notInterestedCount)
-                context.startActivity(intent)
-            }
-
-            if (!isAdmin) {
-                holder.btnEdit.visibility = View.GONE
-                holder.btnDelete.visibility = View.GONE
-            } else {
-                holder.btnEdit.visibility = View.VISIBLE
-                holder.btnDelete.visibility = View.VISIBLE
-
-                holder.btnEdit.setOnClickListener {
-                    Toast.makeText(
-                        holder.itemView.context,
-                        "Uredi kliknut (nije implementirano)",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-
-                holder.btnDelete.setOnClickListener {
-                    val context = holder.itemView.context
-                    val database = FirebaseDatabase.getInstance().getReference("Events")
-                    database.child(event.id).removeValue().addOnSuccessListener {
-                        Toast.makeText(context, "Događaj obrisan", Toast.LENGTH_SHORT).show()
-                    }.addOnFailureListener {
-                        Toast.makeText(context, "Greška pri brisanju", Toast.LENGTH_SHORT).show()
-                    }
-                }
-            }
-
             val auth = FirebaseAuth.getInstance()
             val userId = auth.currentUser?.uid
 
             if (userId == null) {
+                holder.btnEdit.visibility = View.GONE
+                holder.btnDelete.visibility = View.GONE
                 holder.btnInterested.visibility = View.GONE
                 holder.btnNotInterested.visibility = View.GONE
+                holder.commentInput.visibility = View.GONE
+                holder.submitComment.visibility = View.GONE
             } else {
+                holder.commentInput.visibility = View.VISIBLE
+                holder.submitComment.visibility = View.VISIBLE
+
+                holder.submitComment.setOnClickListener {
+                    val commentText = holder.commentInput.text.toString().trim()
+                    if (commentText.isNotEmpty()) {
+                        val commentRef = FirebaseDatabase.getInstance().getReference("Events")
+                            .child(event.id).child("comments").push()
+                        val commentMap = mapOf("userId" to userId, "text" to commentText)
+                        commentRef.setValue(commentMap)
+                            .addOnSuccessListener {
+                                Toast.makeText(holder.itemView.context, "Komentar poslan", Toast.LENGTH_SHORT).show()
+                                holder.commentInput.text.clear()
+                            }
+                            .addOnFailureListener {
+                                Toast.makeText(holder.itemView.context, "Greška pri slanju komentara", Toast.LENGTH_SHORT).show()
+                            }
+                    } else {
+                        Toast.makeText(holder.itemView.context, "Komentar ne smije biti prazan", Toast.LENGTH_SHORT).show()
+                    }
+                }
+
                 val votesRef = FirebaseDatabase.getInstance().getReference("Events").child(event.id).child("votes")
 
                 votesRef.child(userId).addListenerForSingleValueEvent(object : ValueEventListener {
@@ -205,10 +191,55 @@ class EditEventActivity : AppCompatActivity() {
 
                     override fun onCancelled(error: DatabaseError) {}
                 })
+
+                // Prikaz komentara u realnom vremenu
+                val commentsRef = FirebaseDatabase.getInstance().getReference("Events").child(event.id).child("comments")
+                holder.commentsLayout.removeAllViews()
+                commentsRef.addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        holder.commentsLayout.removeAllViews()
+                        for (commentSnap in snapshot.children) {
+                            val commentText = commentSnap.child("text").getValue(String::class.java) ?: continue
+                            val commentView = TextView(holder.itemView.context).apply {
+                                text = "- $commentText"
+                                textSize = 14f
+                                setPadding(8, 4, 8, 4)
+                            }
+                            holder.commentsLayout.addView(commentView)
+                        }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {}
+                })
+            }
+
+            if (!isAdmin) {
+                holder.btnEdit.visibility = View.GONE
+                holder.btnDelete.visibility = View.GONE
+            } else {
+                holder.btnEdit.visibility = View.VISIBLE
+                holder.btnDelete.visibility = View.VISIBLE
+
+                holder.btnEdit.setOnClickListener {
+                    Toast.makeText(
+                        holder.itemView.context,
+                        "Uredi kliknut (nije implementirano)",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+
+                holder.btnDelete.setOnClickListener {
+                    val context = holder.itemView.context
+                    val database = FirebaseDatabase.getInstance().getReference("Events")
+                    database.child(event.id).removeValue().addOnSuccessListener {
+                        Toast.makeText(context, "Događaj obrisan", Toast.LENGTH_SHORT).show()
+                    }.addOnFailureListener {
+                        Toast.makeText(context, "Greška pri brisanju", Toast.LENGTH_SHORT).show()
+                    }
+                }
             }
         }
 
         override fun getItemCount(): Int = items.size
     }
-
 }

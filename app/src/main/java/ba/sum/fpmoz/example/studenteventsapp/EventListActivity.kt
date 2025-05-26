@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -24,6 +25,7 @@ class EventListActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setTheme(R.style.Theme_StudentEventsApp)
         setContentView(R.layout.activity_event_list)
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -71,7 +73,7 @@ class EventListActivity : AppCompatActivity() {
     }
 
     private fun loadEvents(isAdmin: Boolean) {
-        database.child("Events").addListenerForSingleValueEvent(object : ValueEventListener {
+        database.child("Events").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 events.clear()
                 for (child in snapshot.children) {
@@ -109,6 +111,10 @@ class EventListActivity : AppCompatActivity() {
             val btnNotInterested: Button = view.findViewById(R.id.buttonNotInterested)
             val textInterested: TextView = view.findViewById(R.id.textInterestedCount)
             val textNotInterested: TextView = view.findViewById(R.id.textNotInterestedCount)
+            val editTextComment: EditText = view.findViewById(R.id.editTextComment)
+            val buttonSubmitComment: Button = view.findViewById(R.id.buttonSubmitComment)
+            val commentsContainer: LinearLayout = view.findViewById(R.id.commentsLayout)
+
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventViewHolder {
@@ -128,93 +134,73 @@ class EventListActivity : AppCompatActivity() {
                 .error(R.drawable.download)
                 .into(holder.image)
 
-            if (isGuest) {
-                holder.textInterested.visibility = View.GONE
-                holder.textNotInterested.visibility = View.GONE
-            } else {
-                holder.textInterested.text = "Zainteresirani: ${event.interestedCount}"
-                holder.textNotInterested.text = "Nisu zainteresirani: ${event.notInterestedCount}"
-                holder.textInterested.visibility = View.VISIBLE
-                holder.textNotInterested.visibility = View.VISIBLE
+            holder.textInterested.text = "Zainteresirani: ${event.interestedCount}"
+            holder.textNotInterested.text = "Nisu zainteresirani: ${event.notInterestedCount}"
+
+            holder.btnEdit.visibility = if (isAdmin) View.VISIBLE else View.GONE
+            holder.btnDelete.visibility = if (isAdmin) View.VISIBLE else View.GONE
+            holder.btnInterested.visibility = if (!isGuest) View.VISIBLE else View.GONE
+            holder.btnNotInterested.visibility = if (!isGuest) View.VISIBLE else View.GONE
+            holder.textInterested.visibility = if (!isGuest) View.VISIBLE else View.GONE
+            holder.textNotInterested.visibility = if (!isGuest) View.VISIBLE else View.GONE
+
+            // Komentari (prikaz u stvarnom vremenu)
+            val commentsRef = FirebaseDatabase.getInstance().getReference("Events")
+                .child(event.id).child("comments")
+            holder.commentsContainer.removeAllViews()
+            commentsRef.addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    holder.commentsContainer.removeAllViews()
+                    for (commentSnapshot in snapshot.children) {
+                        val commentText = commentSnapshot.child("text").getValue(String::class.java)
+                        val commentView = TextView(holder.itemView.context)
+                        commentView.text = "\u2022 $commentText"
+                        holder.commentsContainer.addView(commentView)
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {}
+            })
+
+            holder.itemView.setOnClickListener {
+                val context = holder.itemView.context
+                val intent = Intent(context, EventDetailActivity::class.java)
+                intent.putExtra("eventId", event.id)
+                intent.putExtra("title", event.title)
+                intent.putExtra("year", event.year)
+                intent.putExtra("date", event.date)
+                intent.putExtra("imageUrl", event.imageUrl)
+                intent.putExtra("interestedCount", event.interestedCount)
+                intent.putExtra("notInterestedCount", event.notInterestedCount)
+                context.startActivity(intent)
             }
 
             if (!isGuest) {
-                holder.itemView.setOnClickListener {
-                    val context = holder.itemView.context
-                    val intent = Intent(context, EventDetailActivity::class.java)
-                    intent.putExtra("eventId", event.id)
-                    intent.putExtra("title", event.title)
-                    intent.putExtra("year", event.year)
-                    intent.putExtra("date", event.date)
-                    intent.putExtra("imageUrl", event.imageUrl)
-                    intent.putExtra("interestedCount", event.interestedCount)
-                    intent.putExtra("notInterestedCount", event.notInterestedCount)
-                    context.startActivity(intent)
-                }
-            }
-
-            if (!isAdmin) {
-                holder.btnEdit.visibility = View.GONE
-                holder.btnDelete.visibility = View.GONE
-            } else {
-                holder.btnEdit.visibility = View.VISIBLE
-                holder.btnDelete.visibility = View.VISIBLE
-                holder.btnEdit.setOnClickListener {
-                    Toast.makeText(
-                        holder.itemView.context,
-                        "Uredi kliknut (nije implementirano)",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-                holder.btnDelete.setOnClickListener {
-                    val context = holder.itemView.context
-                    val database = FirebaseDatabase.getInstance().getReference("Events")
-                    database.child(event.id).removeValue().addOnSuccessListener {
-                        Toast.makeText(context, "Događaj obrisan", Toast.LENGTH_SHORT).show()
-                    }.addOnFailureListener {
-                        Toast.makeText(context, "Greška pri brisanju", Toast.LENGTH_SHORT).show()
+                holder.buttonSubmitComment.setOnClickListener {
+                    val commentText = holder.editTextComment.text.toString().trim()
+                    if (commentText.isNotEmpty()) {
+                        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return@setOnClickListener
+                        val commentData = mapOf(
+                            "text" to commentText,
+                            "userId" to userId,
+                            "timestamp" to ServerValue.TIMESTAMP
+                        )
+                        val commentRef = FirebaseDatabase.getInstance()
+                            .getReference("Events")
+                            .child(event.id)
+                            .child("comments")
+                            .push()
+                        commentRef.setValue(commentData)
+                        holder.editTextComment.text.clear()
+                    } else {
+                        Toast.makeText(holder.itemView.context, "Komentar ne može biti prazan", Toast.LENGTH_SHORT).show()
                     }
                 }
-            }
 
-            val auth = FirebaseAuth.getInstance()
-            val userId = auth.currentUser?.uid
 
-            if (userId == null || isGuest) {
-                holder.btnInterested.visibility = View.GONE
-                holder.btnNotInterested.visibility = View.GONE
             } else {
-                val database = FirebaseDatabase.getInstance().reference
-                val votesRef = database.child("Events").child(event.id).child("votes")
-
-                votesRef.child(userId).addListenerForSingleValueEvent(object : ValueEventListener {
-                    override fun onDataChange(snapshot: DataSnapshot) {
-                        val vote = snapshot.getValue(String::class.java)
-                        if (vote == "interested" || vote == "not_interested") {
-                            holder.btnInterested.isEnabled = false
-                            holder.btnNotInterested.isEnabled = false
-                        } else {
-                            holder.btnInterested.setOnClickListener {
-                                val eventRef = database.child("Events").child(event.id)
-                                eventRef.child("interestedCount").setValue(event.interestedCount + 1)
-                                votesRef.child(userId).setValue("interested")
-                                Toast.makeText(holder.itemView.context, "Glasano: zainteresiran", Toast.LENGTH_SHORT).show()
-                                holder.btnInterested.isEnabled = false
-                                holder.btnNotInterested.isEnabled = false
-                            }
-                            holder.btnNotInterested.setOnClickListener {
-                                val eventRef = database.child("Events").child(event.id)
-                                eventRef.child("notInterestedCount").setValue(event.notInterestedCount + 1)
-                                votesRef.child(userId).setValue("not_interested")
-                                Toast.makeText(holder.itemView.context, "Glasano: nije zainteresiran", Toast.LENGTH_SHORT).show()
-                                holder.btnInterested.isEnabled = false
-                                holder.btnNotInterested.isEnabled = false
-                            }
-                        }
-                    }
-
-                    override fun onCancelled(error: DatabaseError) {}
-                })
+                holder.editTextComment.visibility = View.GONE
+                holder.buttonSubmitComment.visibility = View.GONE
             }
         }
 
